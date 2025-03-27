@@ -1,0 +1,5 @@
+# For scala
+*.bsp
+*.metals
+__pycache__
+.scala-build
