@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-int mystrlen(char *s) {
-    char *p = s;
+int mystrlen(const char *s) {
+    const char *p = s;
     while(*p++);
-    return *p - *s - 1;
+    return p - s - 1;
 }
 
-int mystrend(char *s, char*t) {
+int mystrend(char *s, char *t) {
     int tlen = mystrlen(t);
     char *p = s;
     char *q = t;
@@ -33,4 +33,16 @@ int main() {
     printf("answer: 0, result: %d\n", mystrend(a3, b));
 
     return 0;
+}
+
+// Love this version tbh
+int altversion(const char *s, const char *t) {
+    const char *p = s + mystrlen(s);
+    const char *q = t + mystrlen(t);
+
+    while (t < q)
+        if (*--p != *--q)
+            return 0;
+
+    return 1;
 }
