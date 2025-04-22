@@ -35,15 +35,13 @@ char *mystrncat(char *s, const char *t, int n) {
 int mystrncmp(const char *s, const char *t, int n) {
     const char *p = s;
     const char *q = t;
-    int i;
 
-    while (n > 0) {
-        // cant do this wiff ponters brah
-        i += *p++ - *q++;
-        n--; 
+    while (n-- > 0 && (*p != '\0' || *q != '\0')) {
+        if (*p != *q)
+            return (unsigned char)*s - (unsigned char)*t;
+        ++p, ++q; 
     }
-
-    return i;
+    return 0;
 }
 
 int main() {
