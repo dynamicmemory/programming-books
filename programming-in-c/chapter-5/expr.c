@@ -7,10 +7,10 @@ int main(int argc, char* argv[]) {
     int *ip = numbers;
     int a, b;
     // 2 3 4 + * == 2 x (3 + 4)
-    char *argvlite = "x234+k";
+    char *argvlite = "b234+x";
     int argclite = 6;
 
-    // while(argclite-- > 1) {
+    // while(argclite-- > 0) {
     while(argc-- > 0) {
         // while ((c = *++argvlite)) {
         while ((c = *++argv[0])) {
@@ -19,14 +19,14 @@ int main(int argc, char* argv[]) {
                     a = *--ip;
                     b = *--ip;
                     *ip = a + b;
-                    printf("%d ", *ip);
+                    // printf("%d ", *ip);
                     ip++;
                     break;
-                case 'k':
+                case 'x':
                     a = *--ip;
                     b = *--ip;
                     *ip = a * b;
-                    printf("%d ", *ip);
+                    // printf("%d ", *ip);
                     ip++;
                     break;
                 default:
