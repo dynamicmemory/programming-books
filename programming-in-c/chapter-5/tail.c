@@ -26,16 +26,11 @@ int main(int argc, char *argv[]) {
     char *lines[n];
     char buffer[1000];
     int idx = 0; 
-    // buffer = "hello";
-    // printf("%p = %s\n",buffer, buffer);
-
-    // buffer = "bitch";
-    // printf("%p = %s\n", buffer, buffer);
 
     while((control = my_getline(buffer, 1000)) > 0) {
         if (idx < n) {
-        lines[idx] = buffer; 
-        idx++; 
+            lines[idx] = buffer; 
+            idx++; 
         }
     }   
 
