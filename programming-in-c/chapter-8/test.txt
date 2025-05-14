@@ -1,0 +1,2 @@
+Did this get concatenated
+to the stdout?
