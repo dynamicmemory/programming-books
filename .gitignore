@@ -3,3 +3,15 @@
 *.metals
 __pycache__
 .scala-build
+
+
+# rust specific shit 
+# Ignore build output and backups
+**/target/
+**/*.rs.bk
+**/*.swp
+**/*.swo
+/target
+**/*.rs.bk
+*.swp
+*.swo
