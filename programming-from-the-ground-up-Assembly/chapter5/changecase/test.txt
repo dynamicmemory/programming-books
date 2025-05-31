@@ -1,0 +1,4 @@
+will this file 
+get turned 
+completely into upper
+case
