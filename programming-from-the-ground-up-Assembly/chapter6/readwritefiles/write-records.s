@@ -16,6 +16,8 @@ record1:
   .byte 0
   .endr 
 
+  .ascii "M\0"
+
   .ascii "Bartlett\0"
   .rept 31 # Padding to 40 bytes 
   .byte 0
@@ -34,6 +36,8 @@ record2:
   .byte 0
   .endr 
 
+  .ascii "F\0" 
+
   .ascii "Taylor\0"
   .rept 33 # Padding to 40 bytes 
   .byte 0
@@ -51,6 +55,8 @@ record3:
   .rept 32 #Padding to 40 bytes 
   .byte 0
   .endr 
+
+  .ascii "M\0"
 
   .ascii "McIntire\0"
   .rept 31 # Padding to 40 bytes 
