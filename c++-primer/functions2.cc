@@ -58,7 +58,62 @@ vector<string> process() {
     return {"a", "aa", "aaa"};
 }
 
+int facto(int sum, int n) {
+    if (n == 0) return sum;
+    else return facto(sum*=n, n-1);
+}
+
+void vector_print(vector<int> v, size_t i=0) {
+    if (i == v.size()) return;
+
+    std::cout << v[i] << '\n';
+    vector_print(v, i+1);
+}
+
+void vector_print_iterator(vector<int>::const_iterator it, vector<int>::const_iterator end) {
+    if (it == end) return;
+
+    std::cout << *it << '\n';
+    vector_print_iterator(next(it), end);
+}
+
+void print_line(const char *line) {
+    std::cout << line << std::endl;
+}
+
+int add(int a, int b) {
+    return a + b;
+}
+int sub(int a, int b) {
+    return a - b;
+}
+int mul(int a, int b) {
+    return a * b;
+}
+int divi(int a, int b) {
+    return a / b;
+}
+
 int main(void) {
+
+    vector<int (*)(int, int)> ops;
+    ops.push_back(add);
+    ops.push_back(sub);
+    ops.push_back(mul);
+    ops.push_back(divi);
+
+    for (auto func : ops) {
+        std::cout << func(2,2) << std::endl;
+    }
+
+
+
+    // void (*pf)(const char*) = print_line;
+    // pf("Pointer function");
+
+    // std::cout << facto(1, 5) << std::endl;
+    // vector<int> a = {1,2,3,4,5,6};
+    // vector_print(a);
 
     // string::size_type b;
     // string::size_type a = find_char("Hello", 'l', b);
@@ -76,8 +131,8 @@ int main(void) {
     // int a[] = {1,2,3,4,5};
     // print(std::begin(a), std::end(a)); 
     // print(a, 5);
-    size_t h = hello({1,2,3,4,5,6,6});
-    std::cout << h << std::endl;
+    // size_t h = hello({1,2,3,4,5,6,6});
+    // std::cout << h << std::endl;
 
     return 0;
 }
