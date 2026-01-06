@@ -1,6 +1,18 @@
 #include <iostream>
+using std::string;
 
 struct Sales_data {
+    Sales_data() = default;
+    Sales_data(const std::string &s) : bookNo(s) {}
+    Sales_data(const std::string &s, unsigned n, double p) : 
+        bookNo(s), units_sold(n), revenue(p*n) {}
+
+    Sales_data(std::istream &is) { 
+        double price = 0;
+        is >> bookNo >> units_sold >> price;
+        revenue = price * units_sold;
+    }
+
     std::string isbn() const { 
         return bookNo;
     }
@@ -36,34 +48,28 @@ std::ostream &print(std::ostream &os, const Sales_data &item) {
     return os;
 }
 
-
-std::istream &read(std::istream& is, Sales_data &item) {
-    double price = 0;
-    is >> item.bookNo >> item.units_sold >> price;
-    item.revenue = price * item.units_sold;
-    return is;
-}
-
 class Person {
-    private : std::string const name;
-    private : std::string addr;
+public:
+    Person() = default; 
+    Person(const string &s) : name(s) {}
+    Person(const string &s, const string &a) : name(s), addr(a) {}
 
-    public : std::string get_name() {
-        return name;
-    }
+    string get_name() const { return name; }
+    string get_addr() const { return addr; }
 
-    public : std::string get_addr() {
-        return addr;
-    }
-
+private:
+    string name = "";
+    string addr = "";
 };
 
-
 int main(void) {
-    Person *p1 = new Person();
-    p1->get_name();
-    p1->get_addr();
+    Person p1("Archabald");
+    string name = p1.get_name();
+    string addr = p1.get_addr();
 
+    const Person &p2 = p1;
+
+    std::cout << name << " " << addr << std::endl;
 
     return 0;
 }
