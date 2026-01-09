@@ -4,7 +4,7 @@
 
 typedef char* string;
 
-string s(char *sp) {
+string str(char *sp) {
     size_t len = strlen(sp);
     char *temp = malloc(len + 1);
     for (int i=0; i<len ;i++) 
@@ -14,7 +14,7 @@ string s(char *sp) {
 }
 
 int main(void) {
-    string s1 = s("Hello strings in C"); 
+    string s1 = str("Hello strings in C"); 
     printf("%s\n", s1);
 
     return 0;
