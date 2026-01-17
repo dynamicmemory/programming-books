@@ -30,18 +30,20 @@ private:
 
 class AddressBook {
 public:
-    AddressBook(string file) : filename(file) {}
+    AddressBook(string file) : filename(std::move(file)) {
+        contact_list = populate_contacts();
+    }
 
     void add_contact(string a, string b, string c);
     void edit_contact(string a, string b, string c);
     void delete_contact(string a);
     void update_addressbook();
-    vector<Contact> get_contact_list();
+    const vector<Contact> get_contact_list() const;
     vector<Contact> populate_contacts();
 
 private:
     string filename;
-    vector<Contact> contact_list = populate_contacts();
+    vector<Contact> contact_list;
 };
 
 vector<Contact> AddressBook::populate_contacts() {
@@ -71,7 +73,7 @@ vector<Contact> AddressBook::populate_contacts() {
 }
 
 /* Returns a copy of the class variable 'contact_list' */
-vector<Contact> AddressBook::get_contact_list() {
+const vector<Contact> AddressBook::get_contact_list() const {
     vector<Contact> copy = contact_list;
     return copy;
 }
@@ -87,7 +89,7 @@ void AddressBook::edit_contact(string fname, string lname, string number) {
 }
 
 void AddressBook::delete_contact(string number) {
-    for (auto it=contact_list.begin(); it < contact_list.end(); ++it) {
+    for (auto it=contact_list.begin(); it != contact_list.end(); ++it) {
         if (it->get_number() == number) { 
             contact_list.erase(it);
             cout << number << " was removed from your contacts" << endl;
@@ -100,14 +102,20 @@ void AddressBook::delete_contact(string number) {
 
 void AddressBook::update_addressbook() {
     std::ofstream fout(filename);
-    for (auto contact : contact_list)
+    for (const auto &contact : contact_list)
         fout << contact.get_firstname() << ','
             << contact.get_lastname() << ','
             << contact.get_number() << '\n';
 }
 
 int main(int argc, char *argv[]) {
-    string fname = "./contacts.txt";
+    if (argc != 2) {
+        std::cerr << "usage: ./main filename" << endl;
+        return 1;
+    }
+
+    string fname = argv[1]; 
+    // string fname = "./contacts.txt";
     AddressBook book(fname);
 
     cout << "First Name\tLast Name\tPhone Number" << "\n";
