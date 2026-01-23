@@ -36,6 +36,18 @@ void biggies(std::vector<string> &words, std::vector<string>::size_type sz) {
     std::cout << std::endl;
 }
 
+int how_many(int min_val) {
+    vector<string> words = {"Hello", "asldskfj"};
+    int count = std::count_if(words.begin(), words.end(), [min_val](const string &s){return s.size() > min_val;});
+    return count;
+}
+
+int local() {
+    int n = 10;
+    auto decca = [&n]() -> bool { if (n > 0) --n; return n == 0;};
+    while (decca);
+}
+
 
 int main(void) {
 
@@ -46,6 +58,22 @@ int main(void) {
     auto sum_two_num = [](int a, int b) { return a + b; };
 
 
+    int v1 = 33;
+    auto cap_val = [v1](){return v1;};
+    std::cout<<cap_val()<<'\n'; 
+    v1 = 32;
+    std::cout<<cap_val()<<'\n'; 
+
+    int v2 = 42;
+    auto ref_val = [&v2](){return v2;};
+    std::cout<<ref_val()<<'\n'; 
+    v2 = 0;
+    std::cout<<ref_val()<<'\n'; 
+
+    int v3 = 0;
+    auto mutate_val = [v3]() mutable {return ++v3;};
+    
+    
 
     return 0;
 }
