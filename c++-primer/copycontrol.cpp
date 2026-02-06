@@ -8,6 +8,10 @@ public:
     HasPtr(const HasPtr &rhs) : ps(new std::string(*rhs.ps)), i(rhs.i) {}
     HasPtr& operator=(const HasPtr &);
     ~HasPtr() { delete ps; }
+    void swap(HasPtr &rhs, HasPtr &lhs) {
+        std::swap(lhs.ps, rhs.ps);
+        std::swap(lhs.i, rhs.i);
+    }
 
 private: 
     std::string *ps;
