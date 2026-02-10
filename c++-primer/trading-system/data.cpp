@@ -1,98 +1,109 @@
 #include <vector>
 #include <string>
+using Matrix = std::vector<std::vector<double>>; 
 
 class Database {
 public: 
-    Database(std::string &a, std::string &b) : 
+    Database(const std::string &a, const std::string &b) : 
         database_name("./database"+a+b), table_name("table"+a+b) {}
-    ~Database() {}
 
-    void open() { /*Implement function*/ }
-    void close() { /*Implement function*/ }
-    std::vector<std::string> fetch_row() { /*Implement function*/ return {}; }
-    std::vector<std::string> fetch_all_rows() { /*Implement function*/ return {}; }
-    void insert_row() { /*Implement function*/ }
-    void inset_rows() { /*Implement function*/ }
+    ~Database() = default;
 
-    std::vector<std::vector<double>> get_dataframe() { /*Implement function*/ return {{}}; }
+    void open() { /*TODO*/ }
+    void close() { /*TODO*/ }
+    std::vector<std::string> fetch_row() { /*TODO*/ return {}; }
+    std::vector<std::string> fetch_all_rows() { /*TODO*/ return {}; }
+    void insert_row() { /*TODO*/ }
+    void insert_rows() { /*TODO*/ }
+
+    Matrix &get_dataframe() { /*TODO*/ return dataframe; }
 
 private:
     std::string database_name;
     std::string table_name;
+
+    Matrix dataframe;
 };
 
 
 #include <vector>
 #include <string>
+using Matrix = std::vector<std::vector<double>>; 
 
 class Features {
 public:
-    Features(std::vector<std::vector<double>> f) : dataframe(f) {}
-    ~Features() {}
+    Features(Matrix &f) : dataframe(f) {}
+    ~Features() = default;
 
-    void create_labels() { /*Implement function*/ }
-    std::vector<std::vector<double>> get_features() { /*Implement function*/ return {}; }
-    std::vector<double> get_labels() { /*Implement function*/ return {}; }
+    void create_labels() { /*TODO*/ }
+    const Matrix &get_features() const { /*TODO*/ return dataframe; }
+    std::vector<double> get_labels() { /*TODO*/ return labels; }
 
-    void volitility() { /*Implement function*/ }
-    void sma() { /*Implement function*/ }
-    void rsi() { /*Implement function*/ }
+    void volatility() { /*TODO*/ }
+    void sma() { /*TODO*/ }
+    void rsi() { /*TODO*/ }
 
 private:
-    std::vector<std::vector<double>> dataframe;
+    Matrix dataframe;
+    std::vector<double> labels;
 };
 
 
 #include <vector>
 #include <string>
+using Matrix = std::vector<std::vector<double>>; 
 
 class MachineLearningTools {
 public:
-    MachineLearningTools(std::vector<std::vector<double>> a, std::vector<double> b) :
-        X(a), y(b) {}
-    ~MachineLearningTools() {}
+    MachineLearningTools(const Matrix &a, const std::vector<double> &b) : X(a), y(b) {}
+    ~MachineLearningTools() = default;
 
-    std::vector<std::vector<double>> pipeline() {
+    std::pair<Matrix, std::vector<double>> pipeline() {
         clean();
         scale(); 
         return split_test_train();
     }
 
-    void scale() { /*Implement function*/ }
-    void clean() { /*Implement function*/ }
-    std::vector<std::vector<double>> split_test_train() { return {{}}; }
+    void scale() { /*TODO*/ }
+    void clean() { /*TODO*/ }
+    std::pair<Matrix, std::vector<double>> split_test_train() { 
+        /*TODO*/
+        return {X, y}; 
+    }
 
 private:
-    std::vector<std::vector<double>> X;
+    Matrix X;
     std::vector<double> y;
 };
 
 
 #include <vector>
 #include <string>
+using Matrix = std::vector<std::vector<double>>; 
 
 class DataPipeline {
 public:
-    DataPipeline(std::string &asset, std::string &timeframe) {
-        db = Database(asset, timeframe);
-        f = Features(db.get_dataframe());
-        mlt = MachineLearningTools(f.get_features(), f.get_labels());
-    }
-    ~DataPipeline() {} 
+    DataPipeline(const std::string &asset, const std::string &timeframe) :
+        db(asset, timeframe), 
+        f(db.get_dataframe()), 
+        mlt(f.get_features(), f.get_labels()) {}
+
+    ~DataPipeline() = default;
+
     void run_pipeline() {
-        std::vector<std::vector<double>> data = mlt.split_test_train();
-        y = data[0];
-        X = data[1:data.size()];
+        std::pair<Matrix, std::vector<double>> data = mlt.split_test_train();
+        X = std::move(data.first);
+        y = std::move(data.second);
     }
     
-    std::vector<std::vector<double>> get_X_train() { return X; }
-    std::vector<double> get_y_train() { return y; }
+    const Matrix &get_X_train() const { return X; }
+    const std::vector<double> &get_y_train() const { return y; }
 
 private:
     Database db;
     Features f;
     MachineLearningTools mlt;
-    std::vector<std::vector<double>> X;
+
+    Matrix X;
     std::vector<double> y;
-    
 };
