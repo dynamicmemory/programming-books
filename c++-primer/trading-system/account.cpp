@@ -4,29 +4,15 @@
 
 class ApiManager {
 public: 
-    /*TODO - Load key and secret if none found, set key and secret to ""*/
     ApiManager() {
-        // if (path_to_keys exists) {
-        //     key = read from file or hidden env var 
-        //     secret = read from file or hidden env var 
-        // }
-        // else {
-        //     key = "";
-        //     secret = "";
-        // }
+        const char *k = std::getenv("API_KEY");
+        const char *s = std::getenv("API_SECRET");
+        if (k) key = k;
+        if (s) secret = s;
     }
-
-    /*TODO - some kind of hidden environment variable setter / retriever*/
-    std::pair<std::string, std::string> get_api_key_and_secret() {
-        if (key == "") {
-            std::cin >> key;
-        }
-
-        if (secret == "") {
-            std::cin >> secret;
-        }
-        return {key, secret};
-    }
+    
+    const std::string &get_key() const { return key; }
+    const std::string &get_secret() const { return secret; }
 
 private: 
     std::string key;
@@ -40,22 +26,20 @@ using Response = std::map<std::string, std::string>;
 
 class Exchange {
 public: 
-    Exchange(bool t) : test_net(t) {
-        ApiManager m;
-        auto apikey_and_secret = m.get_api_key_and_secret();
-        apikey = apikey_and_secret.first;
-        apisecret = apikey_and_secret.second;
+    Exchange(const ApiManager &api, bool t=false) : test_net(t) {
+        apikey = api.get_key();
+        apisecret = api.get_secret();
         // Possible test auth here to see if keys are correct, return error if 
         // not?
     }
 
-    const std::string authenticate(const std::string &parameters) const { 
+    std::string authenticate(const std::string &parameters) const { 
         std::string message;
         /*TODO - Generates hash using request with keys + parameters for exchange into string*/
         return message;
     }
 
-    const Response make_request(const std::string &method, 
+    Response make_request(const std::string &method, 
                                 const std::string &url, 
                                 const std::string &parameters) const {
         const std::string message = authenticate(parameters);
@@ -64,7 +48,7 @@ public:
         return r;
     }
 
-    const Response fetch_account_balance(const std::string &acnt_type, 
+    Response fetch_account_balance(const std::string &acnt_type, 
                                          const std::string &asset) const {
         std::string parameters = acnt_type + asset;
         std::string url = base_url + "balance";
@@ -73,7 +57,7 @@ public:
         return res;
     }
     
-    const Response fetch_open_positions(const std::string &acnt_type, 
+    Response fetch_open_positions(const std::string &acnt_type, 
                                         const std::string &asset) const {
         std::string parameters = acnt_type + asset;
         std::string url = base_url + "positions";
@@ -82,7 +66,7 @@ public:
         return res;
     }
 
-    const Response fetch_open_orders(const std::string &acnt_type, 
+    Response fetch_open_orders(const std::string &acnt_type, 
                                      const std::string &asset) const {
         std::string parameters = acnt_type + asset;
         std::string url = base_url + "orders";
@@ -91,7 +75,7 @@ public:
         return res;
     }
 
-    const Response limit_order(const std::string &acnt_type, 
+    Response limit_order(const std::string &acnt_type, 
                                const std::string &asset,
                                const std::string &price, 
                                const std::string &side,
@@ -104,7 +88,7 @@ public:
         return res;
     }
 
-    const Response market_order(const std::string &acnt_type, 
+    Response market_order(const std::string &acnt_type, 
                                 const std::string &asset,
                                 const std::string &side,
                                 const std::string &size) const {
@@ -115,7 +99,7 @@ public:
         return res;
     }
 
-    const Response conditional_order(const std::string &acnt_type, 
+    Response conditional_order(const std::string &acnt_type, 
                                      const std::string &asset,
                                      const std::string &price, 
                                      const std::string &side,
@@ -130,7 +114,7 @@ public:
         return res;
     }
 
-    const Response cancel_order(const std::string &acnt_type, 
+    Response cancel_order(const std::string &acnt_type, 
                                 const std::string &asset,
                                 const std::string &order_id) const {
         std::string parameters = acnt_type + asset + order_id;
@@ -140,7 +124,7 @@ public:
         return res;
     }
 
-    const Response cancel_all_orders(const std::string &acnt_type, 
+    Response cancel_all_orders(const std::string &acnt_type, 
                                      const std::string &asset) const {
         std::string parameters = acnt_type + asset;
         std::string url = base_url + "cancel_all";
@@ -149,7 +133,7 @@ public:
         return res;
     }
 
-    const Response fetch_ohlc(const std::string &acnt_type, 
+    Response fetch_ohlc(const std::string &acnt_type, 
                               const std::string &asset, 
                               const std::string &timeframe,
                               const int &n) const {
@@ -163,7 +147,7 @@ public:
 
 private:
     // Set to false by default
-    bool test_net = false;
+    bool test_net;
     std::string base_url;
     std::string apikey;
     std::string apisecret;
@@ -177,10 +161,11 @@ using Response = std::map<std::string, std::string>;
 
 class AccountManager {
 public: 
-    AccountManager(bool t) : exchange(t) { /*Could test apit correct here*/}
+    AccountManager(Exchange &e) : exchange(e) { /*Could test apit correct here*/}
+    ~AccountManager() = default;
 
     int check_response(Response res) {
-        if (res["retcode"] != std::to_string(0)) {
+        if (res.at("retcode") != std::to_string(0)) {
             /*Error has occured with the exchange print or throw error*/
             std::cout << "Code: " << res["retcode"] 
                       << " Message: " << res["msg"] << "\n";
@@ -189,13 +174,23 @@ public:
         return 0;
     }
 
-    void get_position(const std::string &asset) {
+    double get_account_balance(const std::string &asset) {
+        Response res = exchange.fetch_account_balance(account_type, asset);
+        if (check_response(res) < 0) {
+            /*Throw error, return error, print error, do something with the error*/
+            return 0;
+        }
+        return std::stod(res["balance"]);
+    }
+
+    std::pair<std::string, std::string> get_position(const std::string &asset) {
         Response res = exchange.fetch_open_positions(account_type, asset); 
         if (check_response(res) < 0) {
             /*Throw error, return error, print error, do something with the error*/
-            return;
+            return {"",""};
         }
         /*Process the response and return what we want.*/
+        return {res["side"],res["size"]};
     }
 
     void get_orders(const std::string &asset) {
@@ -267,8 +262,57 @@ private:
 };
 
 
-
 #include <vector>
 #include <string>
 
-class TradeManager {};
+class TradeManager {
+public:
+    TradeManager(AccountManager &a, const std::string &b) : account(a), asset(b) {}
+    ~TradeManager() = default;
+
+    void manager_trade(const std::string &decision) {
+        /* TODO: Define flow for a trade given a decision & current account position & balance */
+    }
+
+    void change_asset(const std::string &new_asset) {
+        asset = new_asset;
+    }
+
+    void open_trade(const std::string &side) { 
+        std::string size = std::to_string(calculate_size());
+        account.market_order(asset, side, size);
+    }
+
+    void close_trade() { 
+        std::pair<std::string, std::string> position = get_position();
+        std::string side = position.first;
+        std::string size = position.second;
+
+        if (side == "" || size == "") {
+            /* TODO: Implement error handling*/
+            return;
+        }
+
+        side = side == "Buy" ? "Sell" : "Buy";
+        account.market_order(asset, side, size);
+    }
+
+    double get_balance() { 
+        double balance = account.get_account_balance(asset); 
+        if (balance <= 0) { /* TODO: Decide if function or caller deals with 0 bal*/}
+        return balance;
+    }
+
+    std::pair<std::string, std::string> get_position() { 
+        return account.get_position(asset);
+    }
+
+    double calculate_entry() { double var; /*TODO - calculation*/ return var; }
+    double calculate_stop() { double var; /*TODO - calculation*/ return var; } 
+    double calculate_target() { double var; /*TODO - calculation*/ return var; }
+    double calculate_size() { double var; /*TODO - calculation*/ return var; }
+    
+private:
+    AccountManager account;
+    std::string asset;
+};
