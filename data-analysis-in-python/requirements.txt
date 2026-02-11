@@ -1,0 +1,17 @@
+pandas
+jupyter
+numpy
+matplotlib
+lxml
+beautifulsoup4
+html5lib
+openpyxl
+requests
+sqlalchemy
+seaborn
+scipy
+statsmodels
+patsy
+scikit-learn 
+pyarrow
+numba
