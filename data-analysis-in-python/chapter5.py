@@ -82,3 +82,143 @@ data.drop(index=["Colorado", "Ohio"])
 data = data.drop("one", axis=1)
 print(data)
 
+obj = Series(np.arange(4, dtype=np.float64), index=['a','b','c','d'])
+print(obj)
+print(obj['b'])
+print(obj[obj < 2])
+
+print(obj.loc[['b']])
+
+obj1 = Series([1,2,3], index=[2,0,1])
+obj2 = Series([1,2,3], index=['a','b','c'])
+
+print(obj1.loc[[0,1]])
+print(obj2.loc[['a']])
+
+print(obj2.iloc[[0]])
+
+data = DataFrame(np.arange(16).reshape((4,4)),
+                 index=["Ohio", "Colorado", "Utah", "NY"],
+                 columns=["one", "two","three","four"])
+
+print(data[["three","one"]])
+print(data[:2])
+
+print(data[data['three'] > 5])
+
+data[data < 5] = 0
+print(data)
+
+print(data.loc[["Colorado","NY"],["two","three"]])
+
+print(data.iloc[[2, 1]])
+
+s1 = DataFrame([7.3,-2.5,3.4,1.5], index=['a','c','d','e'])
+s2 = DataFrame([-2.1,3.6,-1.5,4,3.1], index=['a','c','e','f','g'])
+
+print(s1 + s2)
+
+df1 = DataFrame(np.arange(12).reshape((3,4)), columns=list("abcd"))
+df2 = DataFrame(np.arange(20).reshape((4,5)), columns=list("abcde"))
+
+df2.loc[1,'b'] = np.nan 
+
+print(df1)
+print(df2)
+print(df1 + df2)
+print(df1.add(df2, fill_value=0))
+print(df2.add(df1, fill_value=0))
+
+arr = np.arange(12).reshape((3,4))
+arr[0]
+print(arr - arr[0])
+
+
+
+
+
+
+
+
+
+
+
+
+frame = DataFrame(np.arange(12).reshape((4,3)), columns=list("bde"),
+                  index=["Utah","Colorado","Miami","NY"])
+
+series = frame.iloc[0]
+series2 = Series(np.arange(3), index=["b","e","f"])
+
+print(frame - series)
+print(frame + series2)
+
+
+frame = DataFrame(np.random.standard_normal((4,3)),
+                  columns=list("bde"), 
+                  index=["Utah", "Ohio", "Texas", "Oregon"])
+
+print(np.abs(frame))
+
+print(frame)
+frame2 = frame.apply(lambda x: x.max() - x.min(), axis="columns")
+print(frame2)
+
+# framef = frame.apply(lambda x: f"{x:.2f}")
+# print(framef)
+
+frame = DataFrame(np.arange(16).reshape((4,4)), 
+                  index=["q","f","d","e"], 
+                  columns=["one", "two", "three", "four"])
+frame.sort_values
+print(frame.sort_index(axis=0, ascending=False))
+print(frame.one.sort_values(ascending=False))
+
+df = DataFrame([[1.4, np.nan], [7.1, -4.5], [np.nan, np.nan], [0.75, -1.3]],
+               index=["a","b","c","d"], columns=["one","two"])
+
+print(df)
+print(df.sum())
+print(df.sum(axis=1))
+
+print(df.sum(axis=1, skipna=False))
+print(df.mean(axis=1))
+
+
+print(df.idxmax())
+
+# import sys
+# import pandas.core.indexes
+# sys.modules['pandas.indexes'] = pandas.core.indexes
+#
+# import pandas as pd
+#
+# price = pd.read_pickle("./examples/yahoo_price.pkl")
+# volume = pd.read_pickle("./examples/yahoo_volume.pkl")
+#
+# returns = price.pct_change()
+# print(returns.tail())
+
+
+
+obj = Series(["c","a",'d','a','a','b','b','c','c'])
+print(obj.unique())
+print(obj.value_counts())
+
+mask = obj.isin(['b','c'])
+obj[mask]
+
+data =DataFrame({"a":[1,1,1,2,2], "b":[0,0,1,0,0]})
+print(data)
+print(data.value_counts())
+
+
+
+
+
+
+
+
+
+
+
