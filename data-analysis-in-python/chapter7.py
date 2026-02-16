@@ -116,8 +116,134 @@ movies_windic = movies.join(dummies.add_prefix("Genre_"))
 print(movies_windic.iloc[0])
 
 # 7.3 - Extentions Data Types
+# 7.4 - string methods 
+
+import re 
+
+text = "foo      bar\t bax   \tqux"
+re.split(r"\s+", text)
+
+regex = re.compile(r"\s+")
+regex.split(text) 
+regex.findall(text)
+
+rng = np.random.default_rng(122)
+rng.standard_normal(10)
 
 
+text = """Dave dave@google.com
+Steve steve@gmail.com
+Rob rob@gmail.com
+Ryan ryan@yahoo.com"""
+pattern = r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}"
+
+regex = re.compile(pattern, flags=re.IGNORECASE)
+regex.findall(text)
+
+m = regex.search(text)
+print(regex.match(text))
+
+print(regex.sub("REDACTED", text))
+
+pattern = r"([A-Z0-9._%+-]+)@([A-Z0-9.-]+)\.([A-Z]{2,4})"
+regex = re.compile(pattern, flags=re.IGNORECASE)
+
+m = regex.match("wesm@bright.net")
+m.groups()
+
+print(regex.findall(text))
+
+print(regex.sub(r"Username: \1, Domain: \2, Suffix: \3", text))
 
 
+data = {"Dave": "dave@google.com", "Steve": "steve@gmail.com",
+        "Rob": "rob@gmail.com", "Wes": np.nan}
 
+data = pd.Series(data)
+print(data)
+data.isna()
+
+data =data.astype("string")
+print(data.str.contains("gmail"))
+
+print(data.str.findall(pattern, flags=re.IGNORECASE))
+
+matches = data.str.findall(pattern, flags=re.IGNORECASE).str[0]
+print(matches)
+
+print(matches.str.get(1))
+
+
+print(data.str.extract(pattern, flags=re.IGNORECASE))
+
+
+# 7.6 categorical data
+values = pd.Series(["apple", "orange", "apple", "apple"] * 2)
+
+print(values)
+
+pd.unique(values)
+
+values = pd.Series([0,1,0,0] * 2)
+dim = pd.Series(["apple", "orange"])
+
+print(dim.take(values))
+
+fruits = ["apple", "orange", "apple", "apple"]*2 
+N = len(fruits)
+rng = np.random.default_rng(seed=12345)
+
+df = pd.DataFrame({'fruit': fruits,
+ 'basket_id': np.arange(N),
+ 'count': rng.integers(3, 15, size=N),
+ 'weight': rng.uniform(0, 4, size=N)},
+ columns=['basket_id', 'fruit', 'count', 'weight'])
+
+fruit_cat = df["fruit"].astype("category")
+c = fruit_cat.array 
+type(c)
+
+my_cats = pd.Categorical(["foo", "bar", "bax", "foo", "bar"])
+categories = ["foo", "baz", "bar"]
+codes = [0,1,2,0,0,1]
+my_cats_2 = pd.Categorical.from_codes(codes, categories)
+
+print(my_cats_2)
+
+
+rng = np.random.default_rng(seed=12345)
+draws = rng.standard_normal(1000)
+draws[:5]
+
+bins = pd.qcut(draws, 4)
+print(bins)
+
+bins= pd.qcut(draws, 4, labels=["Q1","Q2","Q3","Q4"])
+bins = pd.Series(bins, name="quartile")
+result = (pd.Series(draws).groupby(bins).agg(["count", "min", "max"]).reset_index())
+print(result)
+
+# N = 10_000_000
+# labels = pd.Series(["foo", "bar", "baz", "qux"] * (N // 4))
+# print(labels)
+#
+# categories = labels.astype("category")
+#
+#
+#
+#
+s = pd.Series(['a','b','c','d']*2)
+cat_s = s.astype("category")
+cat_s.cat.categories
+
+print(cat_s)
+print(cat_s.value_counts())
+
+actual_categories = ['a','b','c','d','e']
+cat_s2 = cat_s.cat.set_categories(actual_categories)
+print(cat_s2)
+print(cat_s2.value_counts())
+
+
+cat_s = pd.Series(['a', 'b', 'c', 'd'] * 2, dtype='category')
+print(pd.get_dummies(cat_s))
