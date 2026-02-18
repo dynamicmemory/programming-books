@@ -58,3 +58,61 @@ right2 = pd.DataFrame([[7., 8.], [9., 10.], [11., 12.], [13, 14]],
 
 print(left2.join(right2, how="outer"))
 
+arr = np.arange(12).reshape((3,4))
+print(arr)
+
+np.concatenate([arr, arr], axis=1)
+print(arr)
+
+s1 = pd.Series([0,1], index=["a", "b"], dtype="Int64")
+s2 = pd.Series([2,3,4], index=["c", "d", "e"], dtype="Int64")
+s3 = pd.Series([5,6], index=["f", "g"], dtype="Int64")
+
+pd.concat([s1, s3])
+
+a = pd.Series([np.nan, 2.5,0.0,3.5,4.5, np.nan], index=['a','b','c','d','e','f'])
+b = pd.Series([0, np.nan, 2, np.nan, np.nan, 5], index=['a','b','c','d','e','f'])
+
+print(a) 
+print(b)
+
+c = np.where(pd.isna(a), b, a)
+
+print(c)
+
+print(a.combine_first(b))
+
+data = pd.DataFrame(np.arange(6).reshape((2, 3)),
+ index=pd.Index(["Ohio", "Colorado"], name="state"),
+ columns=pd.Index(["one", "two", "three"],
+ name="number"))
+
+print(data)
+print(data.stack())
+print(data.stack().unstack())
+print(data.unstack(level="state"))
+
+
+
+data = pd.read_csv("examples/macrodata.csv")
+data = data.loc[:, ["year", "quarter", "realgdp", "infl", "unemp"]]
+print(data.head())
+
+# periods = pd.PeriodIndex(data=data.pop("year"), name="data")
+# print(periods)
+
+df = pd.DataFrame({"key": ["foo", "bar", "baz"],
+ "A": [1, 2, 3],
+ "B": [4, 5, 6],
+ "C": [7, 8, 9]})
+
+print(df)
+
+melted = pd.melt(df, id_vars="key")
+print(melted)
+
+reshaped = melted.pivot(index="key", columns="variable", values="value")
+print(reshaped)
+
+reshaped.reset_index()
+
