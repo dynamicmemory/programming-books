@@ -66,3 +66,12 @@ df = pd.DataFrame({"price": np.random.standard_normal(10),
 print(df.groupby("day").mean())
 
 
+
+tips = pd.read_csv("./examples/tips.csv")
+print(tips.head())
+
+
+
+
+
+
