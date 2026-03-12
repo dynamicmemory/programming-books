@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 struct Sales_data {
     std::string bookNo;
@@ -24,13 +25,44 @@ Sales_data &Sales_data::combine(const Sales_data &rhs) {
     return *this;
 }
 
+std::istream &read(std::istream &is, Sales_data &item) {
+    double price = 0;
+    is >> item.bookNo >> item.units_sold >> price;
+    item.revenue = price * item.units_sold;
+    return is;
+}
+
+std::ostream &print(std::ostream &os, const Sales_data &item) {
+    os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " 
+        << item.avg_price();
+    return os;
+}
+
+Sales_data add(const Sales_data &lhs, const Sales_data &rhs) {
+    Sales_data sum = lhs;
+    sum.combine(rhs);
+    return sum;
+}
 
 
 class Person {
 private:
     std::string name_;
     std::string address_;
+
 public:
     std::string get_name() const { return name_; } 
     std::string get_address() const { return address_; }
+    int age_;
 };
+
+std::istream &read(std::istream &is, Person &p) {
+    int age = 0;
+    is >> age;
+    return is;
+}
+
+std::ostream &print(std::ostream &os, const Person &p) {
+    os << p.get_name() << p.get_address();
+    return os;
+}
