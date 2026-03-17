@@ -58,19 +58,23 @@ int main(void) {
 
 int getop(char *s) {
     int i, c;
-    char prev;
-    
-    while ((s[0] = c = getch()) == ' ' || c == '\t') ;
+    static int prev = EOF;
+    if (prev != EOF) {
+        c = prev;
+        prev = EOF;
+    }
+    else c = getchar();
+    while (c == ' ' || c == '\t') c = getchar();
+    s[0] = c;
     s[1] = '\0';
-    if (!isdigit(c) && c != '.')
-        return c;
-    i = 0;
-    if (isdigit(c))
-        while (isdigit(s[++i] = c = getch())) ;
-    if (c == '.')
-        while (isdigit(s[++i] = c = getch())) ; 
-    s[i] = '\0';
-    if (c != EOF) ungetch(c);
+    if (!isdigit(c) && c != '.') return c;
+    if (isdigit(c)) while (isdigit(c = getchar())) s[++i] = c;
+    if (c == '.') {
+        s[i++] = c;
+        while (isdigit(c = getchar())) s[++i] = c;
+    }
+    s[i+1]='\0';
+    prev = c;
     return NUMBER;
 }
 
