@@ -63,7 +63,6 @@ class Person {
 private:
     std::string name_;
     std::string address_;
-
 public:
     std::string get_name() const { return name_; } 
     std::string get_address() const { return address_; }
